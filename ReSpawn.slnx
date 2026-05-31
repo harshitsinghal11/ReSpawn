@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="ReSpawn.Tests/ReSpawn.Tests.csproj" />
+  <Project Path="ReSpawn/ReSpawn.csproj" />
+</Solution>
