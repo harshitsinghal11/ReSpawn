@@ -1,0 +1,86 @@
+﻿<UserControl x:Class="ReSpawn.Views.HomeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:ReSpawn.Controls"
+             Background="#1a1a2e">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#16213e" Padding="20,0">
+            <Grid>
+                <TextBlock Text="My Library" Foreground="White"
+                           FontSize="18" FontWeight="Bold"
+                           VerticalAlignment="Center"/>
+                <Button Content="+ Add Game" HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Command="{Binding AddGameCommand}"
+                        Padding="16,8" Background="#e94560"
+                        Foreground="White" BorderThickness="0"/>
+            </Grid>
+        </Border>
+
+        <!-- Game Grid -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <Grid>
+                <!-- Empty State -->
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"
+                            Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVis}}">
+                    <TextBlock Text="🎮" FontSize="48" HorizontalAlignment="Center"/>
+                    <TextBlock Text="No games yet" Foreground="White"
+                               FontSize="18" FontWeight="Bold"
+                               HorizontalAlignment="Center" Margin="0,12,0,8"/>
+                    <TextBlock Text="Add your first game to get started"
+                               Foreground="#aaaaaa" HorizontalAlignment="Center"
+                               Margin="0,0,0,16"/>
+                    <Button Content="Add your first game"
+                            Command="{Binding AddGameCommand}"
+                            HorizontalAlignment="Center"
+                            Padding="20,10" Background="#e94560"
+                            Foreground="White" BorderThickness="0"/>
+                </StackPanel>
+
+                <!-- Tiles -->
+                <ItemsControl ItemsSource="{Binding Games}"
+                              Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVis}}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Margin="12" Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <controls:GameTileControl DataContext="{Binding}">
+                                <controls:GameTileControl.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Launch"
+                                                  Command="{Binding DataContext.LaunchGameCommand,
+                                                  RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                  CommandParameter="{Binding}"/>
+                                        <MenuItem Header="Edit"
+                                                  Command="{Binding DataContext.EditGameCommand,
+                                                  RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                  CommandParameter="{Binding}"/>
+                                        <Separator/>
+                                        <MenuItem Header="Remove"
+                                                  Command="{Binding DataContext.RemoveGameCommand,
+                                                  RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                  CommandParameter="{Binding}"/>
+                                    </ContextMenu>
+                                </controls:GameTileControl.ContextMenu>
+                            </controls:GameTileControl>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

@@ -1,0 +1,68 @@
+﻿<UserControl x:Class="ReSpawn.Controls.GameTileControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Width="160" Height="200" Cursor="Hand">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </UserControl.Resources>
+
+    <Border Background="#16213e" CornerRadius="8" Margin="8"
+            BorderBrush="#333" BorderThickness="1">
+        <Border.Style>
+            <Style TargetType="Border">
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="BorderBrush" Value="#e94560"/>
+                        <Setter Property="Effect">
+                            <Setter.Value>
+                                <DropShadowEffect Color="#e94560" BlurRadius="12" Opacity="0.4" ShadowDepth="0"/>
+                            </Setter.Value>
+                        </Setter>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </Border.Style>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="110"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Icon -->
+            <Border Grid.Row="0" Background="#0f3460" CornerRadius="8,8,0,0">
+                <Image Source="{Binding IconPath}" Stretch="Uniform" Margin="16"/>
+            </Border>
+
+            <!-- Info -->
+            <StackPanel Grid.Row="1" Margin="10,8">
+                <TextBlock Text="{Binding Name}" Foreground="White" FontWeight="SemiBold"
+                           FontSize="12" TextTrimming="CharacterEllipsis"/>
+                <TextBlock Text="{Binding FormattedPlaytime}" Foreground="#aaaaaa"
+                           FontSize="11" Margin="0,2,0,0"/>
+
+                <!-- Now Playing Badge -->
+                <Border Visibility="{Binding BadgeVisible, Converter={StaticResource BoolToVis}}"
+                        Background="#1db954" CornerRadius="4" Padding="4,2" Margin="0,4,0,0"
+                        HorizontalAlignment="Left">
+                    <TextBlock Text="● Now Playing" Foreground="White" FontSize="10"/>
+                </Border>
+
+                <!-- Last Played (when not playing) -->
+                <TextBlock Foreground="#666" FontSize="10" Margin="0,4,0,0"
+                           Text="{Binding StatusText}">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding BadgeVisible}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>
