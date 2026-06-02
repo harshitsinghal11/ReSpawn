@@ -31,26 +31,44 @@
         <!-- Game Grid -->
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <Grid>
-                <!-- Empty State -->
-                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"
-                            Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVis}}">
+                <!-- Empty State (shown when no games) -->
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <StackPanel.Style>
+                        <Style TargetType="StackPanel">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsEmpty}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
                     <TextBlock Text="🎮" FontSize="48" HorizontalAlignment="Center"/>
                     <TextBlock Text="No games yet" Foreground="White"
-                               FontSize="18" FontWeight="Bold"
-                               HorizontalAlignment="Center" Margin="0,12,0,8"/>
+                   FontSize="18" FontWeight="Bold"
+                   HorizontalAlignment="Center" Margin="0,12,0,8"/>
                     <TextBlock Text="Add your first game to get started"
-                               Foreground="#aaaaaa" HorizontalAlignment="Center"
-                               Margin="0,0,0,16"/>
+                   Foreground="#aaaaaa" HorizontalAlignment="Center"
+                   Margin="0,0,0,16"/>
                     <Button Content="Add your first game"
-                            Command="{Binding AddGameCommand}"
-                            HorizontalAlignment="Center"
-                            Padding="20,10" Background="#e94560"
-                            Foreground="White" BorderThickness="0"/>
+                Command="{Binding AddGameCommand}"
+                HorizontalAlignment="Center"
+                Padding="20,10" Background="#e94560"
+                Foreground="White" BorderThickness="0"/>
                 </StackPanel>
 
-                <!-- Tiles -->
-                <ItemsControl ItemsSource="{Binding Games}"
-                              Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVis}}">
+                <!-- Tiles (shown when games exist) -->
+                <ItemsControl ItemsSource="{Binding Games}">
+                    <ItemsControl.Style>
+                        <Style TargetType="ItemsControl">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsEmpty}" Value="False">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ItemsControl.Style>
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel Margin="12" Orientation="Horizontal"/>
@@ -58,22 +76,26 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <controls:GameTileControl DataContext="{Binding}">
+                            <controls:GameTileControl
+    DataContext="{Binding}"
+    LaunchCommand="{Binding DataContext.LaunchGameCommand,
+        RelativeSource={RelativeSource AncestorType=ItemsControl}}">
                                 <controls:GameTileControl.ContextMenu>
-                                    <ContextMenu>
-                                        <MenuItem Header="Launch"
-                                                  Command="{Binding DataContext.LaunchGameCommand,
-                                                  RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                  CommandParameter="{Binding}"/>
-                                        <MenuItem Header="Edit"
-                                                  Command="{Binding DataContext.EditGameCommand,
-                                                  RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                  CommandParameter="{Binding}"/>
+                                    <ContextMenu DataContext="{Binding PlacementTarget.DataContext, 
+                     RelativeSource={RelativeSource Self}}">
+                                        <MenuItem Header="🚀 Launch"
+                      Command="{Binding DataContext.LaunchGameCommand,
+                      RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                      CommandParameter="{Binding}"/>
+                                        <MenuItem Header="✏️ Edit"
+                      Command="{Binding DataContext.EditGameCommand,
+                      RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                      CommandParameter="{Binding}"/>
                                         <Separator/>
-                                        <MenuItem Header="Remove"
-                                                  Command="{Binding DataContext.RemoveGameCommand,
-                                                  RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                  CommandParameter="{Binding}"/>
+                                        <MenuItem Header="🗑️ Remove"
+                      Command="{Binding DataContext.RemoveGameCommand,
+                      RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                      CommandParameter="{Binding}"/>
                                     </ContextMenu>
                                 </controls:GameTileControl.ContextMenu>
                             </controls:GameTileControl>

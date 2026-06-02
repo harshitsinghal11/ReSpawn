@@ -72,6 +72,11 @@ namespace ReSpawn.ViewModels
                 ExePath = dialog.FileName;
                 Name = Path.GetFileNameWithoutExtension(dialog.FileName);
                 ProcessName = Path.GetFileNameWithoutExtension(dialog.FileName);
+
+                // Extract icon preview immediately
+                var extractor = new IconExtractor();
+                string tempId = Guid.NewGuid().ToString();
+                IconPath = extractor.Extract(dialog.FileName, tempId);
             }
         }
 
