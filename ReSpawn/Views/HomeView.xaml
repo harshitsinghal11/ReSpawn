@@ -77,25 +77,29 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <controls:GameTileControl
-    DataContext="{Binding}"
-    LaunchCommand="{Binding DataContext.LaunchGameCommand,
-        RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+        DataContext="{Binding}"
+        LaunchCommand="{Binding DataContext.LaunchGameCommand,
+            RelativeSource={RelativeSource AncestorType=UserControl}}"
+        Tag="{Binding DataContext, 
+            RelativeSource={RelativeSource AncestorType=UserControl}}">
                                 <controls:GameTileControl.ContextMenu>
-                                    <ContextMenu DataContext="{Binding PlacementTarget.DataContext, 
-                     RelativeSource={RelativeSource Self}}">
+                                    <ContextMenu>
                                         <MenuItem Header="🚀 Launch"
-                      Command="{Binding DataContext.LaunchGameCommand,
-                      RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                      CommandParameter="{Binding}"/>
+                          Command="{Binding PlacementTarget.Tag.LaunchGameCommand,
+                              RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                          CommandParameter="{Binding PlacementTarget.DataContext,
+                              RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
                                         <MenuItem Header="✏️ Edit"
-                      Command="{Binding DataContext.EditGameCommand,
-                      RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                      CommandParameter="{Binding}"/>
+                          Command="{Binding PlacementTarget.Tag.EditGameCommand,
+                              RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                          CommandParameter="{Binding PlacementTarget.DataContext,
+                              RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
                                         <Separator/>
                                         <MenuItem Header="🗑️ Remove"
-                      Command="{Binding DataContext.RemoveGameCommand,
-                      RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                      CommandParameter="{Binding}"/>
+                          Command="{Binding PlacementTarget.Tag.RemoveGameCommand,
+                              RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                          CommandParameter="{Binding PlacementTarget.DataContext,
+                              RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
                                     </ContextMenu>
                                 </controls:GameTileControl.ContextMenu>
                             </controls:GameTileControl>

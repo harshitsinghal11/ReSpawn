@@ -61,7 +61,7 @@
             MinWidth="80" MinHeight="34"/>
             <Button Content="Add Game" Command="{Binding ConfirmCommand}"
             Padding="16,8"
-            Background="#e94560" Foreground="white" 
+            Background="#e94560" Foreground="Black" 
             BorderThickness="0" FontSize="13"
             MinWidth="90" MinHeight="34"/>
         </StackPanel>

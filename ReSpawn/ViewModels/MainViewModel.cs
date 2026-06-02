@@ -44,8 +44,8 @@ namespace ReSpawn.ViewModels
             RemoveGameCommand = new RelayCommand<GameTileViewModel>(OnRemoveGame);
             EditGameCommand = new RelayCommand<GameTileViewModel>(OnEditGame);
 
-            LoadGamesFromDisk();
             _processMonitor.Start();
+            LoadGamesFromDisk();
         }
 
         public void StopMonitor() => _processMonitor.Stop();
