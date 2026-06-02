@@ -82,6 +82,25 @@ namespace ReSpawn.ViewModels
 
         private void OnConfirm()
         {
+            // Check for duplicate process name
+            var existing = _gameService.LoadGames()
+                .FirstOrDefault(g => g.ProcessName
+                    .ToLower() == ProcessName.ToLower());
+
+            if (existing != null)
+            {
+                var result = System.Windows.MessageBox.Show(
+                    $"⚠️ \"{existing.Name}\" already uses process name \"{ProcessName}\".\n\n" +
+                    "ReSpawn may track both games as the same session.\n\n" +
+                    "Add anyway?",
+                    "Duplicate Process Name",
+                    System.Windows.MessageBoxButton.YesNo,
+                    System.Windows.MessageBoxImage.Warning);
+
+                if (result == System.Windows.MessageBoxResult.No)
+                    return;
+            }
+
             var game = new Game
             {
                 Name = Name,

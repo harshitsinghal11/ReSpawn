@@ -27,7 +27,7 @@ namespace ReSpawn.ViewModels
             get => _trayStatusText;
             set { _trayStatusText = value; OnPropertyChanged(nameof(TrayStatusText)); }
         }
-
+        public ICommand RefreshCommand { get; }
         public ICommand AddGameCommand { get; }
         public ICommand LaunchGameCommand { get; }
         public ICommand RemoveGameCommand { get; }
@@ -39,6 +39,7 @@ namespace ReSpawn.ViewModels
             _processMonitor.GameStarted += OnGameStarted;
             _processMonitor.GameStopped += OnGameStopped;
 
+            RefreshCommand = new RelayCommand(LoadGamesFromDisk);
             AddGameCommand = new RelayCommand(OnAddGame);
             LaunchGameCommand = new RelayCommand<GameTileViewModel>(OnLaunchGame);
             RemoveGameCommand = new RelayCommand<GameTileViewModel>(OnRemoveGame);
@@ -95,6 +96,10 @@ namespace ReSpawn.ViewModels
                     OnPropertyChanged(nameof(tile.FormattedLastPlayed));
                 }
                 TrayStatusText = "No game running";
+
+                // Show balloon notification
+                if (e.Session != null && Application.Current is App app)
+                    app.ShowSessionSaved(e.Game.Name, e.Session.DurationSeconds);
             });
         }
 

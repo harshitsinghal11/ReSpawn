@@ -8,11 +8,20 @@ namespace ReSpawn.Services
     public class GameService
     {
         private readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = true };
+        private readonly string _dataPath;
+
+        public GameService(string? dataPath = null)
+        {
+            _dataPath = dataPath ?? AppDataHelper.GetAppDataPath();
+        }
+
+        private string GamesFilePath =>
+            Path.Combine(_dataPath, Constants.GamesFileName);
 
         /// <summary>Loads all games from games.json. Returns empty list if missing or corrupt.</summary>
         public List<Game> LoadGames()
         {
-            string path = AppDataHelper.GetGamesFilePath();
+            string path = GamesFilePath;
 
             if (!File.Exists(path))
                 return new List<Game>();
@@ -35,7 +44,7 @@ namespace ReSpawn.Services
         {
             AppDataHelper.EnsureDirectoriesExist();
             string json = JsonSerializer.Serialize(games, _jsonOptions);
-            AtomicFileWriter.WriteAllText(AppDataHelper.GetGamesFilePath(), json);
+            AtomicFileWriter.WriteAllText(GamesFilePath, json);
         }
 
         /// <summary>Adds a new game to the library.</summary>

@@ -15,18 +15,28 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Border Grid.Row="0" Background="#16213e" Padding="20,0">
-            <Grid>
-                <TextBlock Text="My Library" Foreground="White"
-                           FontSize="18" FontWeight="Bold"
-                           VerticalAlignment="Center"/>
-                <Button Content="+ Add Game" HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        Command="{Binding AddGameCommand}"
-                        Padding="16,8" Background="#e94560"
-                        Foreground="White" BorderThickness="0"/>
-            </Grid>
-        </Border>
+		<!-- Header -->
+		<Border Grid.Row="0" Background="#16213e" Padding="20,0">
+			<Grid>
+				<TextBlock Text="My Library" Foreground="White"
+						   FontSize="18" FontWeight="Bold"
+						   VerticalAlignment="Center"/>
+				<StackPanel Orientation="Horizontal"
+							HorizontalAlignment="Right"
+							VerticalAlignment="Center">
+					<Button Content="↻ Refresh"
+							Command="{Binding RefreshCommand}"
+							Padding="12,8" Margin="0,0,8,0"
+							Background="#0f3460" Foreground="White"
+							BorderThickness="0"
+							ToolTip="Refresh library (F5)"/>
+					<Button Content="+ Add Game"
+							Command="{Binding AddGameCommand}"
+							Padding="16,8" Background="#e94560"
+							Foreground="White" BorderThickness="0"/>
+				</StackPanel>
+			</Grid>
+		</Border>
 
         <!-- Game Grid -->
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">

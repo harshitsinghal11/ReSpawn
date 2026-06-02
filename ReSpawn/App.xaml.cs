@@ -58,5 +58,14 @@ namespace ReSpawn
         {
             Shutdown();
         }
+
+        public void ShowSessionSaved(string gameName, long seconds)
+        {
+            string time = ReSpawn.Helpers.TimeFormatter.FormatPlaytime(seconds);
+            _trayIcon?.ShowBalloonTip(
+                "Session Saved",
+                $"{gameName} — {time} recorded",
+                Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Info);
+        }
     }
 }

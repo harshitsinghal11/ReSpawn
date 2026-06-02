@@ -1,4 +1,6 @@
 ﻿using System.Windows;
+using System.Windows.Input;
+using ReSpawn.ViewModels;
 
 namespace ReSpawn
 {
@@ -9,6 +11,16 @@ namespace ReSpawn
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+            if (e.Key == Key.F5)
+            {
+                if (DataContext is MainViewModel vm)
+                    vm.LoadGamesFromDisk();
+            }
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
