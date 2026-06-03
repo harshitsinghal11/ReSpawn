@@ -15,7 +15,6 @@
 
                     <MenuItem Header="Exit" 
                               Click="Exit_Click"/>
-                    <Separator/>
                 </ContextMenu>
             </tb:TaskbarIcon.ContextMenu>
         </tb:TaskbarIcon>

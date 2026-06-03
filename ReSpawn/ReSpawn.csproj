@@ -6,10 +6,12 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+	<ApplicationIcon>Assets\respawn.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Assets\default-icon.PNG" />
+    <None Remove="Assets\respawn.ico" />
     <None Remove="Assets\tray-icon.ico" />
   </ItemGroup>
 
@@ -19,6 +21,7 @@
 
   <ItemGroup>
     <Resource Include="Assets\default-icon.PNG" />
+    <Resource Include="Assets\respawn.ico" />
     <Resource Include="Assets\tray-icon.ico" />
   </ItemGroup>
 

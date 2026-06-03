@@ -15,7 +15,6 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-		<!-- Header -->
 		<Border Grid.Row="0" Background="#16213e" Padding="20,0">
 			<Grid>
 				<TextBlock Text="My Library" Foreground="White"
@@ -116,6 +115,14 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+				<!-- Watermark -->
+				<TextBlock Text="Made by Harshit Singhal"
+						   Foreground="#e5e7eb"
+						   FontSize="11"
+						   VerticalAlignment="Bottom"
+						   HorizontalAlignment="Left"
+						   Margin="16,0,0,10"
+						   Grid.Row="1"/>
             </Grid>
         </ScrollViewer>
     </Grid>
