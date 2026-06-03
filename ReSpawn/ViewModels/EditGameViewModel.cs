@@ -38,9 +38,17 @@ namespace ReSpawn.ViewModels
             set { _processName = value; OnPropertyChanged(nameof(ProcessName)); }
         }
 
+        public ICommand ChangeIconCommand { get; }
         public ICommand BrowseCommand { get; }
         public ICommand ConfirmCommand { get; }
         public ICommand CancelCommand { get; }
+
+        private string _iconPath = string.Empty;
+        public string IconPath
+        {
+            get => _iconPath;
+            set { _iconPath = value; OnPropertyChanged(nameof(IconPath)); }
+        }
 
         public EditGameViewModel(GameService gameService, string gameId)
         {
@@ -57,6 +65,9 @@ namespace ReSpawn.ViewModels
                 () => !string.IsNullOrWhiteSpace(Name) &&
                       !string.IsNullOrWhiteSpace(ProcessName));
             CancelCommand = new RelayCommand(() => CloseAction?.Invoke());
+
+            IconPath = game.IconPath;
+            ChangeIconCommand = new RelayCommand(OnChangeIcon);
         }
 
         private void OnBrowse()
@@ -72,6 +83,16 @@ namespace ReSpawn.ViewModels
             }
         }
 
+        private void OnChangeIcon()
+        {
+            var dialog = new OpenFileDialog
+            {
+                Filter = "Image Files|*.png;*.jpg;*.jpeg;*.ico",
+                Title = "Select Custom Icon"
+            };
+            if (dialog.ShowDialog() == true)
+                IconPath = dialog.FileName;
+        }
         private void OnConfirm()
         {
             _gameService.UpdateGame(_gameId, g =>
@@ -79,6 +100,8 @@ namespace ReSpawn.ViewModels
                 g.Name = Name;
                 g.ExePath = ExePath;
                 g.ProcessName = ProcessName;
+                g.IconPath = IconPath;
+
             });
             CloseAction?.Invoke();
         }

@@ -22,17 +22,35 @@ namespace ReSpawn.ViewModels
         public bool IsEmpty => Games.Count == 0;
         public string LibraryStatusText => $"Total Games  |  {Games.Count}";
         private string _trayStatusText = "No game running";
+        
         public string TrayStatusText
         {
             get => _trayStatusText;
             set { _trayStatusText = value; OnPropertyChanged(nameof(TrayStatusText)); }
         }
+
+        public ICommand ShutdownCommand { get; }
+
         public ICommand RefreshCommand { get; }
         public ICommand AddGameCommand { get; }
         public ICommand LaunchGameCommand { get; }
         public ICommand RemoveGameCommand { get; }
         public ICommand EditGameCommand { get; }
 
+        private string _searchText = string.Empty;
+
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                _searchText = value;
+                OnPropertyChanged(nameof(SearchText));
+                ApplySearch();
+            }
+        }
+
+        private List<GameTileViewModel> _allGames = new();
         public MainViewModel()
         {
             _processMonitor = new ProcessMonitor(_gameService);
@@ -44,6 +62,7 @@ namespace ReSpawn.ViewModels
             LaunchGameCommand = new RelayCommand<GameTileViewModel>(OnLaunchGame);
             RemoveGameCommand = new RelayCommand<GameTileViewModel>(OnRemoveGame);
             EditGameCommand = new RelayCommand<GameTileViewModel>(OnEditGame);
+            ShutdownCommand = new RelayCommand(() => System.Windows.Application.Current.Shutdown());
 
             _processMonitor.Start();
             LoadGamesFromDisk();
@@ -53,10 +72,40 @@ namespace ReSpawn.ViewModels
 
         public void LoadGamesFromDisk()
         {
+            _allGames = _gameService.LoadGames()
+                .Select(g => ToViewModel(g)).ToList();
+            ApplySearch();
+            OnPropertyChanged(nameof(IsEmpty));
+            OnPropertyChanged(nameof(LibraryStatusText));
+        }
+        public void AddGameFromPath(string exePath)
+        {
+            var extractor = new IconExtractor();
+            string gameId = Guid.NewGuid().ToString();
+            string iconPath = extractor.Extract(exePath, gameId);
+
+            var game = new Models.Game
+            {
+                Id = gameId,
+                Name = System.IO.Path.GetFileNameWithoutExtension(exePath),
+                ExePath = exePath,
+                ProcessName = System.IO.Path.GetFileNameWithoutExtension(exePath),
+                IconPath = iconPath
+            };
+            _gameService.AddGame(game);
+            LoadGamesFromDisk();
+        }
+        private void ApplySearch()
+        {
             Games.Clear();
-            var games = _gameService.LoadGames();
-            foreach (var g in games)
-                Games.Add(ToViewModel(g));
+            var filtered = string.IsNullOrWhiteSpace(_searchText)
+                ? _allGames
+                : _allGames.Where(g => g.Name.Contains(
+                    _searchText, StringComparison.OrdinalIgnoreCase)).ToList();
+
+            foreach (var g in filtered)
+                Games.Add(g);
+
             OnPropertyChanged(nameof(IsEmpty));
             OnPropertyChanged(nameof(LibraryStatusText));
         }
