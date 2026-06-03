@@ -17,9 +17,16 @@
         <!-- Header -->
 		<Border Grid.Row="0" Background="#16213e" Padding="20,0">
 			<Grid>
-				<TextBlock Text="My Library" Foreground="White"
-						   FontSize="18" FontWeight="Bold"
-						   VerticalAlignment="Center"/>
+				<StackPanel VerticalAlignment="Center">
+					
+					<TextBlock Text="My Library" Foreground="White"
+							   FontSize="18" FontWeight="Bold"/>
+					
+					<TextBlock Text="{Binding LibraryStatusText}"
+							   Foreground="#aaaaaa" FontSize="11"
+							   Margin="0,3,0,0"/>
+				</StackPanel>
+			
 				<StackPanel Orientation="Horizontal"
 							HorizontalAlignment="Right"
 							VerticalAlignment="Center">
@@ -115,14 +122,6 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-				<!-- Watermark -->
-				<TextBlock Text="Made by Harshit Singhal"
-						   Foreground="#e5e7eb"
-						   FontSize="11"
-						   VerticalAlignment="Bottom"
-						   HorizontalAlignment="Left"
-						   Margin="16,0,0,10"
-						   Grid.Row="1"/>
             </Grid>
         </ScrollViewer>
     </Grid>

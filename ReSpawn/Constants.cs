@@ -2,7 +2,7 @@ namespace ReSpawn
 {
     public static class Constants
     {
-        public const int PollIntervalMs = 5000;
+        public const int PollIntervalMs = 1000;
         public const int MinSessionSeconds = 60;
         public const int MaxSessionHours = 12;
         public const string AppDataFolder = "ReSpawn";

@@ -20,7 +20,7 @@ namespace ReSpawn.ViewModels
 
         public ObservableCollection<GameTileViewModel> Games { get; } = new();
         public bool IsEmpty => Games.Count == 0;
-
+        public string LibraryStatusText => $"Total Games  |  {Games.Count}";
         private string _trayStatusText = "No game running";
         public string TrayStatusText
         {
@@ -58,6 +58,7 @@ namespace ReSpawn.ViewModels
             foreach (var g in games)
                 Games.Add(ToViewModel(g));
             OnPropertyChanged(nameof(IsEmpty));
+            OnPropertyChanged(nameof(LibraryStatusText));
         }
 
         private GameTileViewModel ToViewModel(Game g) => new()

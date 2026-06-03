@@ -13,5 +13,21 @@ namespace ReSpawn.Views
             vm.CloseAction = () => this.Close();
             DataContext = vm;
         }
+        private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                var vm = DataContext as AddGameViewModel;
+                if (vm == null) return;
+
+                // Only add if exe is already selected
+                if (!string.IsNullOrEmpty(vm.ExePath) &&
+                    vm.ConfirmCommand.CanExecute(null))
+                {
+                    vm.ConfirmCommand.Execute(null);
+                    e.Handled = true;
+                }
+            }
+        }
     }
 }
