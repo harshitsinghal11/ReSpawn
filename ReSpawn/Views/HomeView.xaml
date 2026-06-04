@@ -12,13 +12,16 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="60"/>
+            <RowDefinition Height="64"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Border Grid.Row="0" Background="#16213e" Padding="20,0">
-            <Grid>
+        <Border Grid.Row="0"
+                Background="#0e0e1f"
+                BorderBrush="#1e1e3a"
+                BorderThickness="0,0,0,1">
+            <Grid Margin="20,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
@@ -26,93 +29,135 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Left: Title + Count -->
-                <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                    <TextBlock Text="My Library" Foreground="White"
-                       FontSize="18" FontWeight="Bold"/>
+                <StackPanel Grid.Column="0"
+                            VerticalAlignment="Center"
+                            Margin="0,0,24,0">
+                    <TextBlock Text="My Library"
+                               Foreground="White"
+                               FontSize="16"
+                               FontWeight="Bold"/>
                     <TextBlock Text="{Binding LibraryStatusText}"
-                       Foreground="#aaaaaa" FontSize="11"
-                       Margin="0,2,0,0"/>
+                               Foreground="#555577"
+                               FontSize="11"
+                               Margin="0,3,0,0"/>
                 </StackPanel>
 
-                <!-- Center: Search Box 60% width -->
-                <TextBox Grid.Column="1"
-                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                 Background="#0f3460" Foreground="White"
-                 BorderBrush="#333" BorderThickness="1"
-                 Padding="12,8" FontSize="13"
-                 VerticalAlignment="Center"
-                 MaxWidth="600"
-                 HorizontalAlignment="Stretch"
-                 Margin="40,0">
-                    <TextBox.Style>
-                        <Style TargetType="TextBox">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="TextBox">
-                                        <Border Background="{TemplateBinding Background}"
-                                        BorderBrush="{TemplateBinding BorderBrush}"
-                                        BorderThickness="{TemplateBinding BorderThickness}"
-                                        CornerRadius="4">
-                                            <Grid>
-                                                <TextBlock x:Name="placeholder"
-                                                   Text="Search Library..."
-                                                   Foreground="#555577"
-                                                   FontSize="13"
-                                                   Padding="12,8"
-                                                   Visibility="Collapsed"/>
-                                                <ScrollViewer x:Name="PART_ContentHost"
-                                                      Padding="{TemplateBinding Padding}"/>
-                                            </Grid>
-                                        </Border>
-                                        <ControlTemplate.Triggers>
-                                            <MultiTrigger>
-                                                <MultiTrigger.Conditions>
-                                                    <Condition Property="Text" Value=""/>
-                                                    <Condition Property="IsFocused" Value="False"/>
-                                                </MultiTrigger.Conditions>
-                                                <Setter TargetName="placeholder"
-                                                Property="Visibility"
-                                                Value="Visible"/>
-                                            </MultiTrigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </TextBox.Style>
-                </TextBox>
+                <!-- Center: Search -->
+                <Border Grid.Column="1"
+                        Background="#12122a"
+                        BorderBrush="#2a2a4a"
+                        BorderThickness="1"
+                        CornerRadius="6"
+                        VerticalAlignment="Center"
+                        MaxWidth="520"
+                        HorizontalAlignment="Stretch">
+                    <Grid>
+                        <TextBlock Text="Search Library..."
+                                   Foreground="#444466"
+                                   FontSize="13"
+                                   Padding="12,8"
+                                   VerticalAlignment="Center"
+                                   IsHitTestVisible="False">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SearchText}" Value="">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                 Background="Transparent"
+                                 Foreground="White"
+                                 BorderThickness="0"
+                                 Padding="12,8"
+                                 FontSize="13"
+                                 CaretBrush="White"
+                                 SelectionBrush="#e94560"/>
+                    </Grid>
+                </Border>
 
                 <!-- Right: Buttons -->
-                <StackPanel Grid.Column="2" Orientation="Horizontal"
-                    VerticalAlignment="Center">
-                    <Button Content="↻ Refresh"
-                    Command="{Binding RefreshCommand}"
-                    Padding="12,8" Margin="0,0,8,0"
-                    Background="#0f3460" Foreground="White"
-                    BorderThickness="0"/>
-                    <Button Content="+ Add Game"
-                    Command="{Binding AddGameCommand}"
-                    Padding="16,8" Margin="0,0,8,0"
-                    Background="#e94560"
-                    Foreground="White" BorderThickness="0"/>
+                <StackPanel Grid.Column="2"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            Margin="16,0,0,0">
+
+                    <!-- Add Game -->
+                    <Button Command="{Binding AddGameCommand}"
+                            Padding="16,8"
+                            Margin="0,0,8,0"
+                            Background="#e94560"
+                            Foreground="White"
+                            BorderThickness="0"
+                            FontSize="13"
+                            FontWeight="SemiBold"
+                            Cursor="Hand">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="bg"
+                                        Background="#e94560"
+                                        CornerRadius="6"
+                                        Padding="16,8">
+                                    <TextBlock Text="+ Add Game"
+                                               Foreground="White"
+                                               FontSize="13"
+                                               FontWeight="SemiBold"
+                                               HorizontalAlignment="Center"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="bg" Property="Background" Value="#c73652"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
                     <!-- Power Button -->
-                    <Button Content="⏻"
-                    Command="{Binding ShutdownCommand}"
-                    Padding="10,8"
-                    Background="#222244"
-                    Foreground="#e94560"
-                    BorderThickness="0"
-                    FontSize="16"
-                    ToolTip="Exit ReSpawn completely"/>
+                    <Button Command="{Binding ShutdownCommand}"
+                            ToolTip="Exit Completely"
+                            Cursor="Hand"
+                            BorderThickness="0"
+                            Background="Transparent">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="bg"
+                                        Background="#1a1a2e"
+                                        CornerRadius="6"
+                                        Width="36" Height="36">
+                                    <TextBlock x:Name="icon"
+                                               Text="⏻"
+                                               FontSize="16"
+                                               Foreground="#444466"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="bg" Property="Background" Value="#2a1020"/>
+                                        <Setter TargetName="icon" Property="Foreground" Value="#e94560"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
                 </StackPanel>
             </Grid>
         </Border>
 
         <!-- Game Grid -->
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
             <Grid>
-                <!-- Empty State (shown when no games) -->
-                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <!-- Empty State -->
+                <StackPanel VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Margin="0,0,0,0">
                     <StackPanel.Style>
                         <Style TargetType="StackPanel">
                             <Setter Property="Visibility" Value="Collapsed"/>
@@ -123,21 +168,26 @@
                             </Style.Triggers>
                         </Style>
                     </StackPanel.Style>
-                    <TextBlock Text="🎮" FontSize="48" HorizontalAlignment="Center"/>
-                    <TextBlock Text="No games yet" Foreground="White"
-                   FontSize="18" FontWeight="Bold"
-                   HorizontalAlignment="Center" Margin="0,12,0,8"/>
-                    <TextBlock Text="Add your first game to get started"
-                   Foreground="#aaaaaa" HorizontalAlignment="Center"
-                   Margin="0,0,0,16"/>
-                    <Button Content="Add your first game"
-                Command="{Binding AddGameCommand}"
-                HorizontalAlignment="Center"
-                Padding="20,10" Background="#e94560"
-                Foreground="White" BorderThickness="0"/>
+
+                    <TextBlock Text="🎮"
+                               FontSize="64"
+                               HorizontalAlignment="Center"
+                               Foreground="White"/>
+                    <TextBlock Text="Your library is empty"
+                               Foreground="White"
+                               FontSize="18"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"
+                               Margin="0,16,0,6"/>
+                    <TextBlock Text="Add a game or drop an .exe file anywhere on this screen"
+                               Foreground="#555577"
+                               FontSize="13"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,24"/>
+                   
                 </StackPanel>
 
-                <!-- Tiles (shown when games exist) -->
+                <!-- Tiles -->
                 <ItemsControl ItemsSource="{Binding Games}">
                     <ItemsControl.Style>
                         <Style TargetType="ItemsControl">
@@ -151,35 +201,36 @@
                     </ItemsControl.Style>
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <WrapPanel Margin="12" Orientation="Horizontal"/>
+                            <WrapPanel Margin="16"
+                                       Orientation="Horizontal"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <controls:GameTileControl
-        DataContext="{Binding}"
-        LaunchCommand="{Binding DataContext.LaunchGameCommand,
-            RelativeSource={RelativeSource AncestorType=UserControl}}"
-        Tag="{Binding DataContext, 
-            RelativeSource={RelativeSource AncestorType=UserControl}}">
+                                DataContext="{Binding}"
+                                LaunchCommand="{Binding DataContext.LaunchGameCommand,
+                                    RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                Tag="{Binding DataContext,
+                                    RelativeSource={RelativeSource AncestorType=UserControl}}">
                                 <controls:GameTileControl.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="🚀 Launch"
-                          Command="{Binding PlacementTarget.Tag.LaunchGameCommand,
-                              RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                          CommandParameter="{Binding PlacementTarget.DataContext,
-                              RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                                                  Command="{Binding PlacementTarget.Tag.LaunchGameCommand,
+                                                      RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                                  CommandParameter="{Binding PlacementTarget.DataContext,
+                                                      RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
                                         <MenuItem Header="✏️ Edit"
-                          Command="{Binding PlacementTarget.Tag.EditGameCommand,
-                              RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                          CommandParameter="{Binding PlacementTarget.DataContext,
-                              RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                                                  Command="{Binding PlacementTarget.Tag.EditGameCommand,
+                                                      RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                                  CommandParameter="{Binding PlacementTarget.DataContext,
+                                                      RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
                                         <Separator/>
                                         <MenuItem Header="🗑️ Remove"
-                          Command="{Binding PlacementTarget.Tag.RemoveGameCommand,
-                              RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                          CommandParameter="{Binding PlacementTarget.DataContext,
-                              RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                                                  Command="{Binding PlacementTarget.Tag.RemoveGameCommand,
+                                                      RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                                  CommandParameter="{Binding PlacementTarget.DataContext,
+                                                      RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
                                     </ContextMenu>
                                 </controls:GameTileControl.ContextMenu>
                             </controls:GameTileControl>
