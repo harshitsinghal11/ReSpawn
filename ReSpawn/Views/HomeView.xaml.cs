@@ -14,24 +14,28 @@ namespace ReSpawn.Views
 
         private void Grid_Drop(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
+
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+            var supported = files.Where(f =>
+                f.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) ||
+                f.EndsWith(".lnk", StringComparison.OrdinalIgnoreCase) ||
+                f.EndsWith(".url", StringComparison.OrdinalIgnoreCase)).ToList();
+
+            if (supported.Count == 0)
             {
-                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                var exeFiles = files.Where(f =>
-                    f.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)).ToList();
-
-                if (exeFiles.Count == 0)
-                {
-                    MessageBox.Show("Please drop .exe files only.",
-                        "Invalid File", MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
-                    return;
-                }
-
-                if (DataContext is MainViewModel vm)
-                    foreach (var exe in exeFiles)
-                        vm.AddGameFromPath(exe);
+                MessageBox.Show(
+                    "Please drop .exe, .lnk or .url files only.",
+                    "Invalid File",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+                return;
             }
+
+            if (DataContext is MainViewModel vm)
+                foreach (var file in supported)
+                    vm.AddGameFromPath(file);
         }
     }
 }

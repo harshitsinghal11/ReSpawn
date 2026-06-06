@@ -78,20 +78,50 @@ namespace ReSpawn.ViewModels
             OnPropertyChanged(nameof(IsEmpty));
             OnPropertyChanged(nameof(LibraryStatusText));
         }
-        public void AddGameFromPath(string exePath)
+        public void AddGameFromPath(string path)
         {
+            string resolvedPath = path;
+            string gameName = System.IO.Path.GetFileNameWithoutExtension(path);
+            bool isSteam = false;
+
+            // Resolve .lnk
+            if (path.EndsWith(".lnk", StringComparison.OrdinalIgnoreCase))
+            {
+                string? target = Helpers.ShortcutResolver.ResolveLnk(path);
+                if (!string.IsNullOrEmpty(target))
+                    resolvedPath = target;
+            }
+
+            // Resolve .url
+            if (path.EndsWith(".url", StringComparison.OrdinalIgnoreCase))
+            {
+                var lines = System.IO.File.ReadAllLines(path);
+                var urlLine = lines.FirstOrDefault(l =>
+                    l.StartsWith("URL=", StringComparison.OrdinalIgnoreCase));
+                if (urlLine != null)
+                {
+                    resolvedPath = urlLine.Substring(4);
+                    isSteam = resolvedPath.StartsWith("steam://",
+                        StringComparison.OrdinalIgnoreCase);
+                }
+            }
+
             var extractor = new IconExtractor();
             string gameId = Guid.NewGuid().ToString();
-            string iconPath = extractor.Extract(exePath, gameId);
+            string iconPath = (!isSteam && System.IO.File.Exists(resolvedPath))
+                ? extractor.Extract(resolvedPath, gameId)
+                : "Assets/default-icon.png";
 
             var game = new Models.Game
             {
                 Id = gameId,
-                Name = System.IO.Path.GetFileNameWithoutExtension(exePath),
-                ExePath = exePath,
-                ProcessName = System.IO.Path.GetFileNameWithoutExtension(exePath),
+                Name = gameName,
+                ExePath = resolvedPath,
+                ProcessName = System.IO.Path.GetFileNameWithoutExtension(
+                    isSteam ? gameName : resolvedPath),
                 IconPath = iconPath
             };
+
             _gameService.AddGame(game);
             LoadGamesFromDisk();
         }
@@ -129,6 +159,10 @@ namespace ReSpawn.ViewModels
                 var tile = Games.FirstOrDefault(g => g.Id == e.Game.Id);
                 if (tile != null) tile.IsPlaying = true;
                 TrayStatusText = $"● Now Playing: {e.Game.Name}";
+
+                // Auto hide to tray when game launches
+                if (Application.Current.MainWindow != null)
+                    Application.Current.MainWindow.Hide();
             });
         }
 
@@ -170,7 +204,20 @@ namespace ReSpawn.ViewModels
                     "File Not Found", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            Process.Start(new ProcessStartInfo(tile.ExePath) { UseShellExecute = true });
+            try
+            {
+                Process.Start(new ProcessStartInfo(tile.ExePath)
+                { UseShellExecute = true });
+
+                // Always hide to tray when launching any game
+                Application.Current.MainWindow?.Hide();
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(
+                    $"Could not launch \"{tile.Name}\".\n\n{ex.Message}",
+                    "Launch Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void OnRemoveGame(GameTileViewModel? tile)

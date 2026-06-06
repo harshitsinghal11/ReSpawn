@@ -25,8 +25,10 @@ namespace ReSpawn.ViewModels
             TimeFormatter.FormatLastPlayed(LastPlayed);
 
         private bool _isPlaying;
-        public bool IsPathBroken => !string.IsNullOrEmpty(ExePath) &&
-                             !System.IO.File.Exists(ExePath);
+        public bool IsPathBroken =>
+    !string.IsNullOrEmpty(ExePath) &&
+    !ExePath.StartsWith("steam://", StringComparison.OrdinalIgnoreCase) &&
+    !System.IO.File.Exists(ExePath);
         public bool IsPlaying
         {
             get => _isPlaying;

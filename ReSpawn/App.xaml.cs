@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Threading;
+using System.Windows;
 using Hardcodet.Wpf.TaskbarNotification;
 using ReSpawn.Helpers;
 using ReSpawn.ViewModels;
@@ -9,13 +10,29 @@ namespace ReSpawn
     {
         private TaskbarIcon? _trayIcon;
 
+        private static Mutex? _mutex;
+
         protected override void OnStartup(StartupEventArgs e)
         {
+            // Check single instance FIRST before anything else
+            _mutex = new Mutex(true, "ReSpawn_SingleInstance_v1", out bool isNewInstance);
+
+            if (!isNewInstance)
+            {
+                // Don't call base.OnStartup — just exit immediately
+                MessageBox.Show(
+                    "ReSpawn is already running.\nCheck your system tray.",
+                    "Already Running",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+                Environment.Exit(0);
+                return;
+            }
+
             base.OnStartup(e);
             AppDataHelper.EnsureDirectoriesExist();
             _trayIcon = (TaskbarIcon)FindResource("TrayIcon");
 
-            // Wire double-click
             _trayIcon.TrayMouseDoubleClick += (s, args) =>
             {
                 MainWindow?.Show();
@@ -24,7 +41,6 @@ namespace ReSpawn
                     MainWindow.WindowState = WindowState.Normal;
             };
 
-            // Wait for window to be created before binding DataContext
             this.Activated += OnAppFirstActivated;
         }
 
@@ -43,7 +59,18 @@ namespace ReSpawn
             if (MainWindow?.DataContext is MainViewModel vm)
                 vm.StopMonitor();
             _trayIcon?.Dispose();
+            _mutex?.ReleaseMutex();
+            _mutex?.Dispose();
             base.OnExit(e);
+        }
+
+        public void ShowSessionSaved(string gameName, long seconds)
+        {
+            string time = ReSpawn.Helpers.TimeFormatter.FormatPlaytime(seconds);
+            _trayIcon?.ShowBalloonTip(
+                "Session Saved",
+                $"{gameName} — {time} recorded",
+                Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Info);
         }
 
         private void OpenApp_Click(object sender, RoutedEventArgs e)
@@ -57,15 +84,6 @@ namespace ReSpawn
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
             Shutdown();
-        }
-
-        public void ShowSessionSaved(string gameName, long seconds)
-        {
-            string time = ReSpawn.Helpers.TimeFormatter.FormatPlaytime(seconds);
-            _trayIcon?.ShowBalloonTip(
-                "Session Saved",
-                $"{gameName} — {time} recorded",
-                Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Info);
         }
     }
 }

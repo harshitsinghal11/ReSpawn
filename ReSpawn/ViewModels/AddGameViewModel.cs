@@ -44,6 +44,12 @@ namespace ReSpawn.ViewModels
             get => _iconPath;
             set { _iconPath = value; OnPropertyChanged(nameof(IconPath)); }
         }
+        private bool _isSteamGame = false;
+        public bool IsSteamGame
+        {
+            get => _isSteamGame;
+            set { _isSteamGame = value; OnPropertyChanged(nameof(IsSteamGame)); }
+        }
 
         public ICommand BrowseCommand { get; }
         public ICommand ConfirmCommand { get; }
@@ -53,31 +59,66 @@ namespace ReSpawn.ViewModels
         {
             _gameService = gameService;
             BrowseCommand = new RelayCommand(OnBrowse);
+
             ConfirmCommand = new RelayCommand(OnConfirm,
-                () => !string.IsNullOrWhiteSpace(Name) &&
-                      !string.IsNullOrWhiteSpace(ProcessName) &&
-                      File.Exists(ExePath));
+    () => !string.IsNullOrWhiteSpace(Name) &&
+          !string.IsNullOrWhiteSpace(ProcessName) &&
+          (!string.IsNullOrWhiteSpace(ExePath)));
             CancelCommand = new RelayCommand(() => CloseAction?.Invoke());
+
         }
 
         private void OnBrowse()
         {
             var dialog = new OpenFileDialog
             {
-                Filter = "Executables|*.exe",
-                Title = "Select Game Executable"
+                Filter = "Supported Files|*.exe;*.lnk;*.url|" +
+                         "Executables|*.exe|" +
+                         "Shortcuts|*.lnk|" +
+                         "URL Shortcuts|*.url",
+                Title = "Select Game or Shortcut"
             };
-            if (dialog.ShowDialog() == true)
-            {
-                ExePath = dialog.FileName;
-                Name = Path.GetFileNameWithoutExtension(dialog.FileName);
-                ProcessName = Path.GetFileNameWithoutExtension(dialog.FileName);
 
-                // Extract icon preview immediately
-                var extractor = new IconExtractor();
-                string tempId = Guid.NewGuid().ToString();
-                IconPath = extractor.Extract(dialog.FileName, tempId);
+            if (dialog.ShowDialog() != true) return;
+
+            string selectedPath = dialog.FileName;
+            string resolvedExePath = selectedPath;
+            string gameName = Path.GetFileNameWithoutExtension(selectedPath);
+
+            // Handle .lnk shortcuts
+            if (selectedPath.EndsWith(".lnk", StringComparison.OrdinalIgnoreCase))
+            {
+                string? target = ShortcutResolver.ResolveLnk(selectedPath);
+                if (!string.IsNullOrEmpty(target))
+                    resolvedExePath = target;
             }
+
+            // Handle .url Steam shortcuts
+            if (selectedPath.EndsWith(".url", StringComparison.OrdinalIgnoreCase))
+            {
+                string[] lines = File.ReadAllLines(selectedPath);
+                string? urlLine = lines.FirstOrDefault(l =>
+                    l.StartsWith("URL=", StringComparison.OrdinalIgnoreCase));
+
+                if (urlLine != null)
+                {
+                    resolvedExePath = urlLine.Substring(4); // Remove "URL="
+                    IsSteamGame = resolvedExePath.StartsWith("steam://",
+                        StringComparison.OrdinalIgnoreCase);
+                }
+            }
+
+            ExePath = resolvedExePath;
+            Name = gameName;
+            ProcessName = IsSteamGame
+                ? gameName
+                : Path.GetFileNameWithoutExtension(resolvedExePath);
+
+            // Extract icon
+            var extractor = new IconExtractor();
+            string tempId = Guid.NewGuid().ToString();
+            if (!IsSteamGame && File.Exists(resolvedExePath))
+                IconPath = extractor.Extract(resolvedExePath, tempId);
         }
 
         private void OnConfirm()
