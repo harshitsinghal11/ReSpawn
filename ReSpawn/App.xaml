@@ -5,7 +5,6 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <tb:TaskbarIcon x:Key="TrayIcon"
-                        IconSource="/Assets/tray-icon.ico"
                         ToolTipText="ReSpawn">
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu>

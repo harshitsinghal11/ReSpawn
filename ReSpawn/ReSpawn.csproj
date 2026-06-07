@@ -6,18 +6,15 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UseWPF>true</UseWPF>
 		<ApplicationIcon>Assets\respawn.ico</ApplicationIcon>
-
-		<!-- App Identity -->
 		<Product>ReSpawn</Product>
 		<Company>Harshit Singhal</Company>
 		<Copyright>© 2026 Harshit Singhal</Copyright>
 		<Description>Unified game library and playtime tracker for PC gamers</Description>
-
-		<!-- Version -->
 		<Version>1.0.0</Version>
 		<AssemblyVersion>1.0.0.0</AssemblyVersion>
 		<FileVersion>1.0.0.0</FileVersion>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<NoWarn>CA1416</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -30,6 +27,7 @@
 		<PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="2.0.1" />
 	</ItemGroup>
 
+	<!-- Resources only — embedded in binary, works with single-file publish -->
 	<ItemGroup>
 		<Resource Include="Assets\default-icon.PNG" />
 		<Resource Include="Assets\respawn.ico" />

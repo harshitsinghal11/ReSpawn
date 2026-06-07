@@ -4,135 +4,139 @@
              xmlns:helpers="clr-namespace:ReSpawn.Helpers"
              Width="175" Height="230" Cursor="Hand">
 
-    <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
-        <helpers:StringToImageSourceConverter x:Key="ImageConverter"/>
-    </UserControl.Resources>
+	<UserControl.Resources>
+		<BooleanToVisibilityConverter x:Key="BoolToVis"/>
+		<helpers:StringToImageSourceConverter x:Key="ImageConverter"/>
+	</UserControl.Resources>
 
-    <Border Background="#13132b"
-            CornerRadius="10"
+	<Border Background="#13132b"
+            CornerRadius="12"
             Margin="8"
-            BorderBrush="#252545"
+            BorderBrush="#1e1e3a"
             BorderThickness="1"
             MouseLeftButtonDown="Border_MouseLeftButtonDown">
-        <Border.Style>
-            <Style TargetType="Border">
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="BorderBrush" Value="#e94560"/>
-                        <Setter Property="Effect">
-                            <Setter.Value>
-                                <DropShadowEffect Color="#e94560"
-                                                 BlurRadius="14"
-                                                 Opacity="0.3"
-                                                 ShadowDepth="0"/>
-                            </Setter.Value>
-                        </Setter>
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-        </Border.Style>
 
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="145"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+		<Border.Style>
+			<Style TargetType="Border">
+				<Style.Triggers>
+					<Trigger Property="IsMouseOver" Value="True">
+						<Setter Property="BorderBrush" Value="#e94560"/>
+					</Trigger>
+				</Style.Triggers>
+			</Style>
+		</Border.Style>
 
-            <!-- Icon Area -->
-            <Border Grid.Row="0"
-                    Background="#0c1830"
-                    CornerRadius="10,10,0,0"
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="145"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+
+			<!-- Icon Area -->
+			<Border Grid.Row="0"
+                    Background="#0a1628"
+                    CornerRadius="12,12,0,0"
                     ClipToBounds="True">
-                <Grid>
-                    <Image Source="{Binding IconPath, 
+				<Grid>
+					<Image Source="{Binding IconPath,
                            Converter={StaticResource ImageConverter}}"
                            Stretch="Uniform"
-                           Margin="22"
+                           Margin="24"
                            RenderOptions.BitmapScalingMode="HighQuality"/>
-                    <!-- Status Dot — top right -->
-                    <Ellipse Width="10" Height="10"
-         HorizontalAlignment="Right"
-         VerticalAlignment="Top"
-         Margin="0,8,8,0">
-                        <Ellipse.Style>
-                            <Style TargetType="Ellipse">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                                <Setter Property="Fill" Value="Transparent"/>
-                                <Style.Triggers>
-                                    <!-- Green = Now Playing -->
-                                    <DataTrigger Binding="{Binding BadgeVisible}" Value="True">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                        <Setter Property="Fill" Value="#1db954"/>
-                                        <Setter Property="ToolTip" Value="Now Playing"/>
-                                    </DataTrigger>
-                                    <!-- Red = File Not Found -->
-                                    <DataTrigger Binding="{Binding IsPathBroken}" Value="True">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                        <Setter Property="Fill" Value="#e94560"/>
-                                        <Setter Property="ToolTip" Value="File Not Found — please re-link the executable"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Ellipse.Style>
-                    </Ellipse>
-                </Grid>
-            </Border>
 
-            <!-- Info Area -->
-            <Border Grid.Row="1"
-                    Background="#16162e"
-                    CornerRadius="0,0,10,10"
-                    Padding="12,8">
-                <StackPanel>
+					<!-- Status Dot top-right -->
+					<Ellipse Width="9" Height="9"
+                             HorizontalAlignment="Right"
+                             VerticalAlignment="Top"
+                             Margin="0,10,10,0">
+						<Ellipse.Style>
+							<Style TargetType="Ellipse">
+								<Setter Property="Visibility" Value="Collapsed"/>
+								<Setter Property="Fill" Value="Transparent"/>
+								<Style.Triggers>
+									<DataTrigger Binding="{Binding BadgeVisible}" Value="True">
+										<Setter Property="Visibility" Value="Visible"/>
+										<Setter Property="Fill" Value="#1db954"/>
+										<Setter Property="ToolTip" Value="Now Playing"/>
+									</DataTrigger>
+									<DataTrigger Binding="{Binding IsPathBroken}" Value="True">
+										<Setter Property="Visibility" Value="Visible"/>
+										<Setter Property="Fill" Value="#e94560"/>
+										<Setter Property="ToolTip" Value="File Not Found"/>
+									</DataTrigger>
+								</Style.Triggers>
+							</Style>
+						</Ellipse.Style>
+					</Ellipse>
+				</Grid>
+			</Border>
 
-                    <!-- Game Name -->
-                    <TextBlock Text="{Binding Name}"
-                               Foreground="White"
+			<!-- Info Area -->
+			<Border Grid.Row="1"
+                    Background="#0f0f26"
+                    CornerRadius="0,0,12,12"
+                    Padding="12,10">
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="6"/>
+						<RowDefinition Height="Auto"/>
+					</Grid.RowDefinitions>
+
+					<!-- Game Name -->
+					<TextBlock Grid.Row="0"
+                               Text="{Binding Name}"
+                               Foreground="#f0f0ff"
                                FontSize="13"
                                FontWeight="SemiBold"
-                               TextTrimming="CharacterEllipsis"
-                               Margin="0,0,0,5"/>
+                               TextTrimming="CharacterEllipsis"/>
 
-                    <!-- Divider -->
-                    <Rectangle Height="1"
-                               Fill="#252545"
-                               Margin="0,0,0,6"/>
+					<!-- Thin accent line -->
+					<Rectangle Grid.Row="1"
+                               Height="1"
+                               Fill="#1e1e3a"
+                               Margin="0,4,0,0"/>
 
-                    <!-- Playtime + Last Played Row -->
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+					<!-- Playtime + Status Row -->
+					<Grid Grid.Row="2" Margin="0,2,0,0">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="Auto"/>
+						</Grid.ColumnDefinitions>
 
-                        <TextBlock Grid.Column="0"
-                                   Text="{Binding FormattedPlaytime}"
-                                   Foreground="#7777aa"
-                                   FontSize="11"/>
+						<!-- Playtime -->
+						<StackPanel Grid.Column="0"
+                                    Orientation="Horizontal"
+                                    VerticalAlignment="Center">
+							<TextBlock Text="⏱ "
+                                       Foreground="#444466"
+                                       FontSize="10"/>
+							<TextBlock Text="{Binding FormattedPlaytime}"
+                                       Foreground="#6666aa"
+                                       FontSize="11"/>
+						</StackPanel>
 
-                        <TextBlock Grid.Column="1"
+						<!-- Last Played -->
+						<TextBlock Grid.Column="1"
                                    Text="{Binding StatusText}"
-                                   Foreground="#444466"
+                                   Foreground="#333355"
                                    FontSize="10"
-                                   HorizontalAlignment="Right">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding BadgeVisible}" 
+                                   VerticalAlignment="Center">
+							<TextBlock.Style>
+								<Style TargetType="TextBlock">
+									<Setter Property="Visibility" Value="Visible"/>
+									<Style.Triggers>
+										<DataTrigger Binding="{Binding BadgeVisible}"
                                                      Value="True">
-                                            <Setter Property="Visibility" 
-                                                    Value="Collapsed"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                    </Grid>
-
-                </StackPanel>
-            </Border>
-        </Grid>
-    </Border>
+											<Setter Property="Visibility" Value="Collapsed"/>
+										</DataTrigger>
+									</Style.Triggers>
+								</Style>
+							</TextBlock.Style>
+						</TextBlock>
+					</Grid>
+				</Grid>
+			</Border>
+		</Grid>
+	</Border>
 </UserControl>

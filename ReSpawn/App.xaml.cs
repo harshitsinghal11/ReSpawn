@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.IO;
+using System.Threading;
 using System.Windows;
 using Hardcodet.Wpf.TaskbarNotification;
 using ReSpawn.Helpers;
@@ -9,17 +10,23 @@ namespace ReSpawn
     public partial class App : Application
     {
         private TaskbarIcon? _trayIcon;
-
         private static Mutex? _mutex;
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            // Check single instance FIRST before anything else
-            _mutex = new Mutex(true, "ReSpawn_SingleInstance_v1", out bool isNewInstance);
+            // Crash logger — writes to Desktop if app crashes silently
+            AppDomain.CurrentDomain.UnhandledException += (s, ex) =>
+            {
+                File.WriteAllText(
+                    Path.Combine(Environment.GetFolderPath(
+                        Environment.SpecialFolder.Desktop), "ReSpawn_crash.txt"),
+                    ex.ExceptionObject.ToString());
+            };
 
+            // Single instance check
+            _mutex = new Mutex(true, "ReSpawn_SingleInstance_v1", out bool isNewInstance);
             if (!isNewInstance)
             {
-                // Don't call base.OnStartup — just exit immediately
                 MessageBox.Show(
                     "ReSpawn is already running.\nCheck your system tray.",
                     "Already Running",
@@ -32,6 +39,16 @@ namespace ReSpawn
             base.OnStartup(e);
             AppDataHelper.EnsureDirectoriesExist();
             _trayIcon = (TaskbarIcon)FindResource("TrayIcon");
+
+            // Set tray icon from embedded resource
+            try
+            {
+                var iconUri = new Uri("pack://application:,,,/Assets/tray-icon.ico");
+                var streamInfo = GetResourceStream(iconUri);
+                if (streamInfo != null)
+                    _trayIcon.Icon = new System.Drawing.Icon(streamInfo.Stream);
+            }
+            catch { }
 
             _trayIcon.TrayMouseDoubleClick += (s, args) =>
             {
@@ -66,11 +83,11 @@ namespace ReSpawn
 
         public void ShowSessionSaved(string gameName, long seconds)
         {
-            string time = ReSpawn.Helpers.TimeFormatter.FormatPlaytime(seconds);
+            string time = TimeFormatter.FormatPlaytime(seconds);
             _trayIcon?.ShowBalloonTip(
                 "Session Saved",
                 $"{gameName} — {time} recorded",
-                Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Info);
+                BalloonIcon.Info);
         }
 
         private void OpenApp_Click(object sender, RoutedEventArgs e)
