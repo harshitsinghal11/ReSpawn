@@ -54,7 +54,6 @@ No accounts. No internet. No bloat. Just your games and your time.
 - 60-second minimum session threshold — ignores accidental launches
 - 12-hour session cap — protects against hibernate/sleep corruption
 - Orphaned session cleanup on every startup
-- Balloon notification when a session is saved
 
 ### 🖥️ System Tray
 - Window closes to system tray — tracker keeps running silently
@@ -78,8 +77,7 @@ No accounts. No internet. No bloat. Just your games and your time.
 ### 🔒 Privacy & Security
 - 100% offline — zero network requests, ever
 - No telemetry, analytics, or crash reporting
-- All data stored locally in `%AppData%\ReSpawn\`
-- No administrator privileges required
+- All data stored locally in System
 - Single instance enforcement — prevents duplicate processes
 
 ---
@@ -109,9 +107,6 @@ Process closes → session saved to games.json
         ↓
 Playtime updated → balloon notification shown
 ```
-
-All data lives in `%AppData%\ReSpawn\games.json` with atomic writes and automatic backups to prevent corruption.
-
 ---
 
 ## Tech Stack
@@ -163,8 +158,6 @@ ReSpawn.Tests/
 ## Author
 
 **Harshit Singhal**
-
-Built with ❤️ for gamers who just want to play, not manage launchers.
 
 ---
 
