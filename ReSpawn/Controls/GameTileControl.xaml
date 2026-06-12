@@ -34,21 +34,22 @@
 
 			<!-- Icon Area -->
 			<Border Grid.Row="0"
-                    Background="#0a1628"
-                    CornerRadius="12,12,0,0"
-                    ClipToBounds="True">
+					Background="#0a1628"
+					CornerRadius="12,12,0,0"
+					ClipToBounds="True">
 				<Grid>
+					<!-- Game Icon -->
 					<Image Source="{Binding IconPath,
-                           Converter={StaticResource ImageConverter}}"
-                           Stretch="Uniform"
-                           Margin="24"
-                           RenderOptions.BitmapScalingMode="HighQuality"/>
+               Converter={StaticResource ImageConverter}}"
+						   Stretch="Uniform"
+						   Margin="24"
+						   RenderOptions.BitmapScalingMode="HighQuality"/>
 
 					<!-- Status Dot top-right -->
 					<Ellipse Width="9" Height="9"
-                             HorizontalAlignment="Right"
-                             VerticalAlignment="Top"
-                             Margin="0,10,10,0">
+							 HorizontalAlignment="Right"
+							 VerticalAlignment="Top"
+							 Margin="0,10,10,0">
 						<Ellipse.Style>
 							<Style TargetType="Ellipse">
 								<Setter Property="Visibility" Value="Collapsed"/>
@@ -68,6 +69,75 @@
 							</Style>
 						</Ellipse.Style>
 					</Ellipse>
+
+					<!-- Hover Play Overlay -->
+					<Border CornerRadius="12,12,0,0"
+							Background="#AA000000"
+							IsHitTestVisible="True">
+						<Border.Style>
+							<Style TargetType="Border">
+								<Setter Property="Opacity" Value="0"/>
+								<Style.Triggers>
+									<DataTrigger Binding="{Binding IsMouseOver,
+                            RelativeSource={RelativeSource AncestorType=UserControl}}"
+										Value="True">
+										<DataTrigger.EnterActions>
+											<BeginStoryboard>
+												<Storyboard>
+													<DoubleAnimation
+														Storyboard.TargetProperty="Opacity"
+														To="1" Duration="0:0:0.15"/>
+												</Storyboard>
+											</BeginStoryboard>
+										</DataTrigger.EnterActions>
+										<DataTrigger.ExitActions>
+											<BeginStoryboard>
+												<Storyboard>
+													<DoubleAnimation
+														Storyboard.TargetProperty="Opacity"
+														To="0" Duration="0:0:0.15"/>
+												</Storyboard>
+											</BeginStoryboard>
+										</DataTrigger.ExitActions>
+									</DataTrigger>
+								</Style.Triggers>
+							</Style>
+						</Border.Style>
+
+						<!-- Play Button -->
+						<Button HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Command="{Binding LaunchCommand,
+                        RelativeSource={RelativeSource AncestorType=UserControl}}"
+								CommandParameter="{Binding DataContext,
+                        RelativeSource={RelativeSource AncestorType=UserControl}}"
+								Cursor="Hand"
+								BorderThickness="0"
+								Background="Transparent">
+							<Button.Template>
+								<ControlTemplate TargetType="Button">
+									<Border x:Name="playBtn"
+											Background="#e94560"
+											CornerRadius="50"
+											Width="46" Height="46">
+										<TextBlock Text="▶"
+												   Foreground="White"
+												   FontSize="16"
+												   HorizontalAlignment="Center"
+												   VerticalAlignment="Center"
+												   Margin="4,0,0,0"/>
+									</Border>
+									<ControlTemplate.Triggers>
+										<Trigger Property="IsMouseOver" Value="True">
+											<Setter TargetName="playBtn"
+													Property="Background"
+													Value="#c73652"/>
+										</Trigger>
+									</ControlTemplate.Triggers>
+								</ControlTemplate>
+							</Button.Template>
+						</Button>
+					</Border>
 				</Grid>
 			</Border>
 

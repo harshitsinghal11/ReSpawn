@@ -30,6 +30,20 @@ namespace ReSpawn.ViewModels
         }
 
         public ICommand ShutdownCommand { get; }
+        
+        public ICommand ToggleStartupCommand { get; }
+
+        private bool _runAtStartup;
+        public bool RunAtStartup
+        {
+            get => _runAtStartup;
+            set
+            {
+                _runAtStartup = value;
+                OnPropertyChanged(nameof(RunAtStartup));
+                StartupManager.SetStartup(value);
+            }
+        }
 
         public ICommand RefreshCommand { get; }
         public ICommand AddGameCommand { get; }
@@ -38,7 +52,6 @@ namespace ReSpawn.ViewModels
         public ICommand EditGameCommand { get; }
 
         private string _searchText = string.Empty;
-
         public string SearchText
         {
             get => _searchText;
@@ -63,6 +76,8 @@ namespace ReSpawn.ViewModels
             RemoveGameCommand = new RelayCommand<GameTileViewModel>(OnRemoveGame);
             EditGameCommand = new RelayCommand<GameTileViewModel>(OnEditGame);
             ShutdownCommand = new RelayCommand(() => System.Windows.Application.Current.Shutdown());
+            _runAtStartup = StartupManager.IsStartupEnabled();
+            ToggleStartupCommand = new RelayCommand(() => RunAtStartup = !RunAtStartup);
 
             _processMonitor.Start();
             LoadGamesFromDisk();

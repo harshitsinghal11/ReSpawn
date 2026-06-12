@@ -7,14 +7,19 @@
         <tb:TaskbarIcon x:Key="TrayIcon"
                         ToolTipText="ReSpawn">
             <tb:TaskbarIcon.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Open ReSpawn" 
-                              Click="OpenApp_Click"
-                              FontWeight="Bold"/>
-
-                    <MenuItem Header="Exit" 
-                              Click="Exit_Click"/>
-                </ContextMenu>
+				<ContextMenu>
+					<MenuItem Header="Open ReSpawn"
+							  Click="OpenApp_Click"
+							  FontWeight="Bold"/>
+					<Separator/>
+					<MenuItem Header="Run at Startup"
+							  Command="{Binding ToggleStartupCommand}"
+							  IsCheckable="True"
+							  IsChecked="{Binding RunAtStartup, Mode=OneWay}"/>
+					<Separator/>
+					<MenuItem Header="Exit"
+							  Click="Exit_Click"/>
+				</ContextMenu>
             </tb:TaskbarIcon.ContextMenu>
         </tb:TaskbarIcon>
     </Application.Resources>

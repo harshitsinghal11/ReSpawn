@@ -10,9 +10,9 @@
 		<Company>Harshit Singhal</Company>
 		<Copyright>© 2026 Harshit Singhal</Copyright>
 		<Description>Unified game library and playtime tracker for PC gamers</Description>
-		<Version>1.0.0</Version>
-		<AssemblyVersion>1.0.0.0</AssemblyVersion>
-		<FileVersion>1.0.0.0</FileVersion>
+		<Version>1.1.0</Version>
+		<AssemblyVersion>1.1.0.0</AssemblyVersion>
+		<FileVersion>1.1.0.0</FileVersion>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<NoWarn>CA1416</NoWarn>
 	</PropertyGroup>
