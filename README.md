@@ -4,7 +4,7 @@
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%2010%2F11-0078D4?style=flat-square&logo=windows)
 ![Stack](https://img.shields.io/badge/Stack-C%23%20·%20.NET%208%20·%20WPF-512BD4?style=flat-square&logo=dotnet)
-![Version](https://img.shields.io/badge/Version-1.0.0-blue?style=flat-square)
+![Version](https://img.shields.io/badge/Version-1.1.0-blue?style=flat-square)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)
 ![Build](https://img.shields.io/badge/Build-Passing-brightgreen?style=flat-square)
 ![Tests](https://img.shields.io/badge/Tests-12%20Passed-brightgreen?style=flat-square)
@@ -62,6 +62,7 @@ No accounts. No internet. No bloat. Just your games and your time.
 - Double-click tray icon to restore window
 - Auto-minimizes to tray when a game launches
 - Power button in header for immediate full exit
+- Optional "Run at Startup" setting to automatically launch ReSpawn with Windows
 
 ### 🎨 UI & UX
 - Clean dark interface with modern card layout
@@ -71,6 +72,8 @@ No accounts. No internet. No bloat. Just your games and your time.
 - Enter key to confirm Add Game dialog
 - F5 keyboard shortcut to refresh library
 - Dynamic Add Game button — grey when inactive, red when ready
+- Play button overlay on game cards for faster game launching
+- Hover-based quick launch interaction for improved usability
 
 ### 🔒 Privacy & Security
 - 100% offline — zero network requests, ever
