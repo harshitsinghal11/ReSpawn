@@ -10,11 +10,34 @@
 	</UserControl.Resources>
 
 	<Border Background="#13132b"
-            CornerRadius="12"
-            Margin="8"
-            BorderBrush="#1e1e3a"
-            BorderThickness="1"
-            MouseLeftButtonDown="Border_MouseLeftButtonDown">
+        CornerRadius="12"
+        Margin="8"
+        BorderBrush="#1e1e3a"
+        BorderThickness="1"
+        MouseLeftButtonDown="Border_MouseLeftButtonDown"
+        Opacity="0">
+		<Border.Triggers>
+			<EventTrigger RoutedEvent="Loaded">
+				<BeginStoryboard>
+					<Storyboard>
+						<DoubleAnimation Storyboard.TargetProperty="Opacity"
+										 From="0" To="1"
+										 Duration="0:0:0.3"
+										 EasingFunction="{x:Null}"/>
+						<DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+										 From="12" To="0"
+										 Duration="0:0:0.3">
+							<DoubleAnimation.EasingFunction>
+								<CubicEase EasingMode="EaseOut"/>
+							</DoubleAnimation.EasingFunction>
+						</DoubleAnimation>
+					</Storyboard>
+				</BeginStoryboard>
+			</EventTrigger>
+		</Border.Triggers>
+		<Border.RenderTransform>
+			<TranslateTransform Y="12"/>
+		</Border.RenderTransform>
 
 		<Border.Style>
 			<Style TargetType="Border">
@@ -155,12 +178,26 @@
 
 					<!-- Game Name -->
 					<TextBlock Grid.Row="0"
-                               Text="{Binding Name}"
-                               Foreground="#f0f0ff"
-                               FontSize="13"
-                               FontWeight="SemiBold"
-                               TextTrimming="CharacterEllipsis"/>
+           Text="{Binding Name}"
+           Foreground="#f0f0ff"
+           FontSize="13"
+           FontWeight="SemiBold"
+           TextTrimming="CharacterEllipsis">
 
+						<TextBlock.ToolTip>
+							<ToolTip Background="#1e1e3e"
+									 Foreground="White"
+									 BorderBrush="#e94560"
+									 BorderThickness="1"
+									 Padding="10,6"
+									 FontSize="12">
+								<TextBlock Text="{Binding Name}"
+										   TextWrapping="Wrap"/>
+							</ToolTip>
+						</TextBlock.ToolTip>
+
+					</TextBlock>
+								
 					<!-- Thin accent line -->
 					<Rectangle Grid.Row="1"
                                Height="1"
