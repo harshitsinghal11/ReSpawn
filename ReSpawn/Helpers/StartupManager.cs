@@ -25,7 +25,8 @@ namespace ReSpawn.Helpers
             {
                 string exePath = System.Diagnostics.Process
                     .GetCurrentProcess().MainModule!.FileName;
-                key.SetValue(AppName, $"\"{exePath}\"");
+                // Pass --minimized flag so app knows it launched from startup
+                key.SetValue(AppName, $"\"{exePath}\" --minimized");
             }
             else
             {

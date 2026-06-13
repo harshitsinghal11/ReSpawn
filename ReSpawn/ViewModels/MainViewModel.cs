@@ -17,12 +17,14 @@ namespace ReSpawn.ViewModels
 
         private readonly GameService _gameService = new();
         private readonly ProcessMonitor _processMonitor;
-
+        public bool IsSearchEmpty => !string.IsNullOrWhiteSpace(SearchText) && Games.Count == 0;
         public ObservableCollection<GameTileViewModel> Games { get; } = new();
         public bool IsEmpty => Games.Count == 0;
-        public string LibraryStatusText => $"Total Games  |  {Games.Count}";
         private string _trayStatusText = "No game running";
-        
+       
+        public string LibraryStatusText => $"Total Games  |  {Games.Count}  ·  {TimeFormatter.FormatPlaytime(
+        _allGames.Sum(g => g.TotalPlaytimeSeconds))}  total";
+
         public string TrayStatusText
         {
             get => _trayStatusText;
@@ -44,12 +46,14 @@ namespace ReSpawn.ViewModels
                 StartupManager.SetStartup(value);
             }
         }
-
+        
         public ICommand RefreshCommand { get; }
         public ICommand AddGameCommand { get; }
         public ICommand LaunchGameCommand { get; }
         public ICommand RemoveGameCommand { get; }
         public ICommand EditGameCommand { get; }
+        public ICommand ClearSearchCommand { get; }
+
 
         private string _searchText = string.Empty;
         public string SearchText
@@ -78,6 +82,7 @@ namespace ReSpawn.ViewModels
             ShutdownCommand = new RelayCommand(() => System.Windows.Application.Current.Shutdown());
             _runAtStartup = StartupManager.IsStartupEnabled();
             ToggleStartupCommand = new RelayCommand(() => RunAtStartup = !RunAtStartup);
+            ClearSearchCommand = new RelayCommand(() => SearchText = string.Empty);
 
             _processMonitor.Start();
             LoadGamesFromDisk();
@@ -87,8 +92,11 @@ namespace ReSpawn.ViewModels
 
         public void LoadGamesFromDisk()
         {
+            Games.Clear();
+
             _allGames = _gameService.LoadGames()
                 .Select(g => ToViewModel(g)).ToList();
+
             ApplySearch();
             OnPropertyChanged(nameof(IsEmpty));
             OnPropertyChanged(nameof(LibraryStatusText));
@@ -153,6 +161,8 @@ namespace ReSpawn.ViewModels
 
             OnPropertyChanged(nameof(IsEmpty));
             OnPropertyChanged(nameof(LibraryStatusText));
+            OnPropertyChanged(nameof(IsSearchEmpty));
+
         }
 
         private GameTileViewModel ToViewModel(Game g) => new()

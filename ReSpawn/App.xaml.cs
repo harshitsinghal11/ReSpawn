@@ -11,10 +11,11 @@ namespace ReSpawn
     {
         private TaskbarIcon? _trayIcon;
         private static Mutex? _mutex;
+        private bool _startupHideDone = false;
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            // Crash logger — writes to Desktop if app crashes silently
+            // Crash logger
             AppDomain.CurrentDomain.UnhandledException += (s, ex) =>
             {
                 File.WriteAllText(
@@ -37,10 +38,20 @@ namespace ReSpawn
             }
 
             base.OnStartup(e);
+
+            // If launched at startup — hide after window created
+            // Only minimize if launched WITH --minimized flag
+            bool launchedFromStartup = Environment
+                .GetCommandLineArgs()
+                .Contains("--minimized");
+
+            if (launchedFromStartup)
+                this.Activated += HideOnStartup;
+
             AppDataHelper.EnsureDirectoriesExist();
             _trayIcon = (TaskbarIcon)FindResource("TrayIcon");
 
-            // Set tray icon from embedded resource
+            // Set tray icon programmatically
             try
             {
                 var iconUri = new Uri("pack://application:,,,/Assets/tray-icon.ico");
@@ -59,6 +70,14 @@ namespace ReSpawn
             };
 
             this.Activated += OnAppFirstActivated;
+        }
+
+        private void HideOnStartup(object? sender, EventArgs e)
+        {
+            if (_startupHideDone) return;
+            _startupHideDone = true;
+            MainWindow?.Hide();
+            this.Activated -= HideOnStartup;
         }
 
         private bool _firstActivation = true;

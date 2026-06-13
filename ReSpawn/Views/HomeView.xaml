@@ -150,24 +150,73 @@
         </Border>
 
         <!-- Game Grid -->
-        <ScrollViewer Grid.Row="1"
-                      VerticalScrollBarVisibility="Auto"
-                      HorizontalScrollBarVisibility="Disabled">
+		<ScrollViewer Grid.Row="1"
+			   VerticalScrollBarVisibility="Auto"
+			   HorizontalScrollBarVisibility="Disabled">
+			<ScrollViewer.Resources>
+				<Style TargetType="ScrollBar">
+					<Setter Property="Width" Value="6"/>
+					<Setter Property="Background" Value="Transparent"/>
+					<Setter Property="Template">
+						<Setter.Value>
+							<ControlTemplate TargetType="ScrollBar">
+								<Grid Background="Transparent">
+									<Track x:Name="PART_Track" IsDirectionReversed="True">
+										<Track.DecreaseRepeatButton>
+											<RepeatButton Command="ScrollBar.PageUpCommand"
+														  Opacity="0"/>
+										</Track.DecreaseRepeatButton>
+										<Track.Thumb>
+											<Thumb>
+												<Thumb.Template>
+													<ControlTemplate TargetType="Thumb">
+														<Border x:Name="thumb"
+																Background="#2a2a4a"
+																CornerRadius="3"
+																Margin="1,0"/>
+														<ControlTemplate.Triggers>
+															<Trigger Property="IsMouseOver" Value="True">
+																<Setter TargetName="thumb"
+																		Property="Background"
+																		Value="#e94560"/>
+															</Trigger>
+														</ControlTemplate.Triggers>
+													</ControlTemplate>
+												</Thumb.Template>
+											</Thumb>
+										</Track.Thumb>
+										<Track.IncreaseRepeatButton>
+											<RepeatButton Command="ScrollBar.PageDownCommand"
+														  Opacity="0"/>
+										</Track.IncreaseRepeatButton>
+									</Track>
+								</Grid>
+							</ControlTemplate>
+						</Setter.Value>
+					</Setter>
+				</Style>
+			</ScrollViewer.Resources>
+			
             <Grid>
+				
                 <!-- Empty State -->
                 <StackPanel VerticalAlignment="Center"
                             HorizontalAlignment="Center"
                             Margin="0,0,0,0">
-                    <StackPanel.Style>
-                        <Style TargetType="StackPanel">
-                            <Setter Property="Visibility" Value="Collapsed"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsEmpty}" Value="True">
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </StackPanel.Style>
+					<StackPanel.Style>
+						<Style TargetType="StackPanel">
+							<Setter Property="Visibility" Value="Collapsed"/>
+							<Style.Triggers>
+								<MultiDataTrigger>
+									<MultiDataTrigger.Conditions>
+										<Condition Binding="{Binding IsEmpty}" Value="True"/>
+										<Condition Binding="{Binding IsSearchEmpty}" Value="False"/>
+									</MultiDataTrigger.Conditions>
+									<Setter Property="Visibility" Value="Visible"/>
+								</MultiDataTrigger>
+							</Style.Triggers>
+						</Style>
+					</StackPanel.Style>
 
                     <TextBlock Text="🎮"
                                FontSize="64"
@@ -186,7 +235,63 @@
                                Margin="0,0,0,24"/>
                    
                 </StackPanel>
+				<!-- Empty Search State -->
+				<StackPanel VerticalAlignment="Center"
+							HorizontalAlignment="Center"
+							Margin="0,60,0,0">
+					<StackPanel.Style>
+						<Style TargetType="StackPanel">
+							<Setter Property="Visibility" Value="Collapsed"/>
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding IsSearchEmpty}" Value="True">
+									<Setter Property="Visibility" Value="Visible"/>
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</StackPanel.Style>
 
+					<TextBlock Text="🔍"
+							   FontSize="48"
+							   HorizontalAlignment="Center"
+							   Foreground="White"/>
+					<TextBlock Text="No results found"
+							   Foreground="White"
+							   FontSize="18"
+							   FontWeight="Bold"
+							   HorizontalAlignment="Center"
+							   Margin="0,16,0,6"/>
+					<TextBlock Text="{Binding SearchText,
+               StringFormat='No games matching &quot;{0}&quot;'}"
+							   Foreground="#555577"
+							   FontSize="13"
+							   HorizontalAlignment="Center"
+							   Margin="0,0,0,24"/>
+					<Button HorizontalAlignment="Center"
+							Cursor="Hand"
+							BorderThickness="0"
+							Command="{Binding ClearSearchCommand}">
+						<Button.Template>
+							<ControlTemplate TargetType="Button">
+								<Border x:Name="bg"
+										Background="#1e1e3e"
+										CornerRadius="6"
+										Padding="20,10">
+									<TextBlock Text="Clear Search"
+											   Foreground="White"
+											   FontSize="13"
+											   HorizontalAlignment="Center"/>
+								</Border>
+								<ControlTemplate.Triggers>
+									<Trigger Property="IsMouseOver" Value="True">
+										<Setter TargetName="bg"
+												Property="Background"
+												Value="#e94560"/>
+									</Trigger>
+								</ControlTemplate.Triggers>
+							</ControlTemplate>
+						</Button.Template>
+					</Button>
+				</StackPanel>
                 <!-- Tiles -->
                 <ItemsControl ItemsSource="{Binding Games}">
                     <ItemsControl.Style>
