@@ -26,14 +26,14 @@ ReSpawn solves that problem by monitoring game processes directly on Windows and
 ## Screenshots
 
 <p align="center">
-  <img src="/ReSpawn/Assets/imgs/home.png" width="900">
+  <img src="/ReSpawn/Assets/imgs/home.png" alt="Main Library" width="900">
 </p>
 
 <p align="center">
-  <img src="/ReSpawn/Assets/imgs/add-game.png" width="32%">
-  <img src="/ReSpawn/Assets/imgs/edit-game.png" width="32%">
-  <img src="/ReSpawn/Assets/imgs/ready-to-launch.png" width="32%">
+  <img src="/ReSpawn/Assets/imgs/add-game.png" alt="Add Game" width="49%">
+  <img src="/ReSpawn/Assets/imgs/edit-game.png" alt="Edit Game" width="49%">
 </p>
+
 ### With ReSpawn, You Can
 
 - Track all your games in one library
