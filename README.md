@@ -26,13 +26,13 @@ ReSpawn solves that problem by monitoring game processes directly on Windows and
 ## Screenshots
 
 <p align="center">
-  <img src="/ReSpawn/Assets/home.png" width="900">
+  <img src="/ReSpawn/Assets/imgs/home.png" width="900">
 </p>
 
 <p align="center">
-  <img src="/ReSpawn/Assets/add-game.png" width="32%">
-  <img src="/ReSpawn/Assets/edit-game.png" width="32%">
-  <img src="/ReSpawn/Assets/ready-to-launch.png" width="32%">
+  <img src="/ReSpawn/Assets/imgs/add-game.png" width="32%">
+  <img src="/ReSpawn/Assets/imgs/edit-game.png" width="32%">
+  <img src="/ReSpawn/Assets/imgs/ready-to-launch.png" width="32%">
 </p>
 ### With ReSpawn, You Can
 
